@@ -32,7 +32,7 @@ export default function ComparisonSlider({ item }) {
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
-      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleMouseUp);
     }
     return () => {
@@ -51,8 +51,7 @@ export default function ComparisonSlider({ item }) {
     <div
       className="zipsar-card"
       style={{
-        marginTop: '1.5rem',
-        boxShadow: '6px 6px 0px var(--black)',
+        marginTop: '1.25rem',
       }}
     >
       <div
@@ -60,16 +59,16 @@ export default function ComparisonSlider({ item }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '1rem',
+          marginBottom: '0.85rem',
           flexWrap: 'wrap',
-          gap: '12px',
+          gap: '8px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <h3
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1.2rem',
+              fontSize: 'clamp(1rem, 3.5vw, 1.2rem)',
               fontWeight: 800,
               letterSpacing: '-0.02em',
               color: 'var(--black)',
@@ -77,14 +76,23 @@ export default function ComparisonSlider({ item }) {
           >
             INTERACTIVE COMPARISON
           </h3>
-          <span className="pill" style={{ fontSize: '0.65rem' }}>
+          <span className="pill" style={{ fontSize: '0.62rem', padding: '3px 8px' }}>
             SLIDE TO COMPARE
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.7rem',
+            flexWrap: 'wrap',
+          }}
+        >
           <span style={{ color: 'var(--grey)' }}>
-            DIMENSIONS: <strong style={{ color: 'var(--black)' }}>{result.width} &times; {result.height}px</strong>
+            DIM: <strong style={{ color: 'var(--black)' }}>{result.width}&times;{result.height}px</strong>
           </span>
           <span style={{ color: 'var(--grey)' }}>
             SPEED: <strong style={{ color: 'var(--black)' }}>{result.durationMs}ms</strong>
@@ -92,7 +100,7 @@ export default function ComparisonSlider({ item }) {
         </div>
       </div>
 
-      {/* Slider Viewport */}
+      {/* Slider Viewport with Touch-Action None */}
       <div
         ref={containerRef}
         onMouseDown={handleMouseDown}
@@ -100,11 +108,12 @@ export default function ComparisonSlider({ item }) {
         style={{
           position: 'relative',
           width: '100%',
-          height: '420px',
+          height: 'clamp(260px, 45vh, 420px)',
           borderRadius: '16px',
           overflow: 'hidden',
           cursor: 'ew-resize',
           userSelect: 'none',
+          touchAction: 'none', // Crucial for mobile touch swiping!
           backgroundColor: '#E5E5E3',
           backgroundImage: `
             linear-gradient(45deg, #D4D4D1 25%, transparent 25%), 
@@ -175,12 +184,12 @@ export default function ComparisonSlider({ item }) {
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: '36px',
-              height: '36px',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%',
               background: 'var(--white)',
               border: '2px solid var(--black)',
-              boxShadow: '3px 3px 0px var(--black)',
+              boxShadow: '2px 2px 0px var(--black)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -194,45 +203,53 @@ export default function ComparisonSlider({ item }) {
           </div>
         </div>
 
-        {/* Floating Badges */}
+        {/* Responsive Floating Badges */}
         <div
           style={{
             position: 'absolute',
-            top: '14px',
-            left: '14px',
+            top: '10px',
+            left: '10px',
             background: 'var(--black)',
             color: 'var(--white)',
-            padding: '6px 12px',
+            padding: '4px 8px',
             borderRadius: '100px',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
+            fontSize: 'clamp(0.6rem, 2.4vw, 0.72rem)',
             fontWeight: 700,
             letterSpacing: '0.04em',
             pointerEvents: 'none',
+            maxWidth: '45%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
-          ORIGINAL: {formatBytes(result.originalSize)}
+          ORIG: {formatBytes(result.originalSize)}
         </div>
 
         <div
           style={{
             position: 'absolute',
-            top: '14px',
-            right: '14px',
+            top: '10px',
+            right: '10px',
             background: 'var(--white)',
             color: 'var(--black)',
             border: '1.5px solid var(--black)',
-            padding: '6px 12px',
+            padding: '4px 8px',
             borderRadius: '100px',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
+            fontSize: 'clamp(0.6rem, 2.4vw, 0.72rem)',
             fontWeight: 700,
             letterSpacing: '0.04em',
             boxShadow: '2px 2px 0px var(--black)',
             pointerEvents: 'none',
+            maxWidth: '52%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
-          COMPRESSED: {formatBytes(result.compressedSize)} (-{result.reductionPercent}%)
+          -{result.reductionPercent}% ({formatBytes(result.compressedSize)})
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Dropzone from './components/Dropzone';
 import Controls from './components/Controls';
@@ -18,22 +18,47 @@ export default function App() {
   });
   const [isPackagingZip, setIsPackagingZip] = useState(false);
 
-  // Compress a single item
-  const processItem = useCallback(async (item, currentConfig) => {
+  // Request version tracking to discard obsolete in-flight compressions during fast sliding
+  const configVersionRef = useRef(0);
+
+  // Compress a single item with image caching and cancellation check
+  const processItem = useCallback(async (item, currentConfig, expectedVersion) => {
     try {
       setItems((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, status: 'processing', error: null } : i))
       );
 
-      const result = await compressImage(item.file, currentConfig);
+      const result = await compressImage(item.file, {
+        ...currentConfig,
+        cachedImg: item.decodedImg,
+        initialObjectUrl: item.result?.originalUrl,
+      });
+
+      // If a newer quality/format change happened while this was computing, ignore outdated result
+      if (expectedVersion !== undefined && configVersionRef.current !== expectedVersion) {
+        if (result.url) URL.revokeObjectURL(result.url);
+        return;
+      }
 
       setItems((prev) =>
-        prev.map((i) =>
-          i.id === item.id ? { ...i, status: 'done', result, error: null } : i
-        )
+        prev.map((i) => {
+          if (i.id !== item.id) return i;
+          // Revoke old compressed object URL to prevent memory leaks
+          if (i.result?.url && i.result.url !== result.url) {
+            URL.revokeObjectURL(i.result.url);
+          }
+          return {
+            ...i,
+            status: 'done',
+            decodedImg: result.decodedImg || i.decodedImg,
+            result,
+            error: null,
+          };
+        })
       );
     } catch (err) {
       console.error('Compression error:', err);
+      if (expectedVersion !== undefined && configVersionRef.current !== expectedVersion) return;
       setItems((prev) =>
         prev.map((i) =>
           i.id === item.id ? { ...i, status: 'error', error: err.message } : i
@@ -48,6 +73,7 @@ export default function App() {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       file,
       status: 'pending',
+      decodedImg: null,
       result: null,
       error: null,
     }));
@@ -58,16 +84,29 @@ export default function App() {
       setActiveId(newItems[0].id);
     }
 
+    const currentVersion = configVersionRef.current;
     newItems.forEach((item) => {
-      processItem(item, config);
+      processItem(item, config, currentVersion);
     });
   };
 
-  // Recompress existing items when settings change
+  // Recompress items when settings change (debounced from Controls)
   const handleConfigChange = (newConfig) => {
+    configVersionRef.current += 1;
+    const currentVersion = configVersionRef.current;
     setConfig(newConfig);
+
+    // Prioritize active image first for immediate user visual feedback
+    const activeOne = items.find((i) => i.id === activeId);
+    if (activeOne) {
+      processItem(activeOne, newConfig, currentVersion);
+    }
+
+    // Process remaining images in background
     items.forEach((item) => {
-      processItem(item, newConfig);
+      if (item.id !== activeId) {
+        processItem(item, newConfig, currentVersion);
+      }
     });
   };
 
@@ -216,11 +255,10 @@ export default function App() {
       {/* Upload Dropzone */}
       <Dropzone onFilesSelected={handleFilesSelected} />
 
-      {/* Compression Configuration Bar */}
+      {/* Compression Configuration Bar - Butter smooth controls */}
       <Controls
         config={config}
         onChange={handleConfigChange}
-        disabled={items.some((i) => i.status === 'processing')}
       />
 
       {/* Interactive Before/After Split Comparison Slider */}

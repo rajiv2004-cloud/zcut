@@ -65,15 +65,15 @@ export default function Dropzone({ onFilesSelected }) {
       onClick={() => fileInputRef.current?.click()}
       style={{
         position: 'relative',
-        borderRadius: '24px',
+        borderRadius: '20px',
         border: `2px dashed ${isDragOver ? 'var(--black)' : 'rgba(17,17,17,0.3)'}`,
-        background: isDragOver ? 'var(--white)' : 'var(--white)',
-        padding: '3.5rem 2rem',
+        background: 'var(--white)',
+        padding: 'clamp(2rem, 6vw, 3.5rem) 1.25rem',
         textAlign: 'center',
         cursor: 'pointer',
-        transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease',
-        transform: isDragOver ? 'translateY(-6px) rotate(-0.5deg)' : 'none',
-        boxShadow: isDragOver ? '8px 8px 0px var(--black)' : '4px 4px 0px rgba(17,17,17,0.08)',
+        boxShadow: isDragOver ? '6px 6px 0px var(--black)' : '4px 4px 0px rgba(17,17,17,0.08)',
+        transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+        userSelect: 'none',
       }}
     >
       <input
@@ -85,23 +85,22 @@ export default function Dropzone({ onFilesSelected }) {
         style={{ display: 'none' }}
       />
 
-      {/* Floating Animated Icon Box */}
+      {/* Upload Icon Box */}
       <div
         style={{
-          width: '64px',
-          height: '64px',
-          margin: '0 auto 1.5rem',
+          width: 'clamp(50px, 12vw, 64px)',
+          height: 'clamp(50px, 12vw, 64px)',
+          margin: '0 auto 1.25rem',
           borderRadius: '16px',
           background: 'var(--black)',
           color: 'var(--white)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '4px 4px 0px rgba(17,17,17,0.2)',
-          animation: 'float 4s ease-in-out infinite',
+          boxShadow: '4px 4px 0px rgba(17,17,17,0.15)',
         }}
       >
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
           <polyline points="17 8 12 3 7 8" />
           <line x1="12" y1="3" x2="12" y2="15" />
@@ -111,42 +110,32 @@ export default function Dropzone({ onFilesSelected }) {
       <h2
         style={{
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)',
+          fontSize: 'clamp(1.35rem, 4.5vw, 2.1rem)',
           fontWeight: 800,
           letterSpacing: '-0.03em',
           color: 'var(--black)',
-          marginBottom: '0.6rem',
+          marginBottom: '0.5rem',
+          lineHeight: 1.2,
         }}
       >
-        {isDragOver ? 'DROP FILES TO COMPRESS' : 'DROP IMAGES OR CLICK TO BROWSE'}
+        {isDragOver ? 'DROP FILES TO COMPRESS' : 'TAP OR DROP IMAGES HERE'}
       </h2>
 
       <p
         style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.85rem',
+          fontSize: 'clamp(0.75rem, 2.8vw, 0.85rem)',
           color: 'var(--grey)',
-          maxWidth: '520px',
-          margin: '0 auto 1.8rem',
-          lineHeight: 1.7,
+          maxWidth: '500px',
+          margin: '0 auto 1.5rem',
+          lineHeight: 1.6,
         }}
       >
-        Single or batch image compression. Fast, lossless &amp; 100% private. Paste anytime with{' '}
-        <span
-          style={{
-            background: 'var(--black)',
-            color: 'var(--white)',
-            padding: '2px 6px',
-            borderRadius: '4px',
-            fontSize: '0.75rem',
-          }}
-        >
-          Ctrl+V
-        </span>
+        Select single or multiple photos. Fast, lossless &amp; 100% private.
       </p>
 
-      {/* Pills Row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+      {/* Responsive Pills Row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap' }}>
         <span className="pill active">
           ✦ PNG (RECOMMENDED)
         </span>
@@ -160,7 +149,7 @@ export default function Dropzone({ onFilesSelected }) {
           AVIF
         </span>
         <span className="pill green">
-          ZERO SERVER UPLOAD
+          100% CLIENT-SIDE
         </span>
       </div>
     </div>

@@ -5,19 +5,21 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
   if (!items || items.length === 0) return null;
 
   return (
-    <div style={{ marginTop: '1.5rem' }}>
+    <div style={{ marginTop: '1.25rem' }}>
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '0.8rem',
+          marginBottom: '0.65rem',
+          flexWrap: 'wrap',
+          gap: '6px',
         }}
       >
         <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.75rem',
+            fontSize: '0.72rem',
             fontWeight: 700,
             color: 'var(--grey)',
             textTransform: 'uppercase',
@@ -29,15 +31,15 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
         <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.7rem',
+            fontSize: '0.68rem',
             color: 'var(--grey)',
           }}
         >
-          CLICK TO INSPECT &bull; DIRECT DOWNLOAD PER ITEM
+          TAP TO PREVIEW
         </span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {items.map((item) => {
           const isActive = item.id === activeId;
           const { file, result, status } = item;
@@ -48,25 +50,25 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
               onClick={() => onSelect(item.id)}
               style={{
                 display: 'flex',
+                flexWrap: 'wrap',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '12px 18px',
-                borderRadius: '16px',
+                padding: '10px 14px',
+                borderRadius: '14px',
                 background: 'var(--white)',
                 border: `1.5px solid ${isActive ? 'var(--black)' : 'rgba(17,17,17,0.15)'}`,
-                boxShadow: isActive ? '5px 5px 0px var(--black)' : '2px 2px 0px rgba(17,17,17,0.05)',
+                boxShadow: isActive ? '4px 4px 0px var(--black)' : '2px 2px 0px rgba(17,17,17,0.05)',
                 cursor: 'pointer',
-                transition: 'all 0.25s ease',
-                gap: '16px',
+                gap: '10px',
               }}
             >
-              {/* Thumbnail + Name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
+              {/* Thumbnail + Name (Flexible for small screens) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: '1 1 200px', minWidth: 0 }}>
                 <div
                   style={{
-                    width: '46px',
-                    height: '46px',
-                    borderRadius: '10px',
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '8px',
                     overflow: 'hidden',
                     background: 'var(--bg)',
                     border: '1.5px solid rgba(17,17,17,0.15)',
@@ -87,17 +89,16 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
                   )}
                 </div>
 
-                <div style={{ minWidth: 0 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <p
                     style={{
                       fontFamily: 'var(--font-mono)',
-                      fontSize: '0.85rem',
+                      fontSize: '0.8rem',
                       fontWeight: 700,
                       color: 'var(--black)',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      maxWidth: '280px',
                     }}
                   >
                     {file.name}
@@ -105,7 +106,7 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
                   <p
                     style={{
                       fontFamily: 'var(--font-mono)',
-                      fontSize: '0.72rem',
+                      fontSize: '0.7rem',
                       color: 'var(--grey)',
                       marginTop: '2px',
                     }}
@@ -121,14 +122,23 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
                 </div>
               </div>
 
-              {/* Status & Actions */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+              {/* Status, Download & Remove Buttons */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  justifyContent: 'flex-end',
+                  flexShrink: 0,
+                  marginLeft: 'auto',
+                }}
+              >
                 {status === 'processing' ? (
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--grey)' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--grey)' }}>
                     COMPRESSING...
                   </span>
                 ) : result ? (
-                  <span className="pill green" style={{ fontSize: '0.68rem', padding: '4px 10px' }}>
+                  <span className="pill green" style={{ fontSize: '0.65rem', padding: '3px 8px' }}>
                     -{result.reductionPercent}%
                   </span>
                 ) : null}
@@ -152,18 +162,10 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
                       alignItems: 'center',
                       gap: '4px',
                       fontFamily: 'var(--font-mono)',
-                      fontSize: '0.72rem',
+                      fontSize: '0.7rem',
                       fontWeight: 700,
                       color: 'var(--black)',
-                      transition: 'all 0.2s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'var(--black)';
-                      e.currentTarget.style.color = 'var(--white)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'var(--bg)';
-                      e.currentTarget.style.color = 'var(--black)';
+                      minHeight: '34px',
                     }}
                   >
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -171,11 +173,11 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    DOWNLOAD
+                    <span>SAVE</span>
                   </button>
                 )}
 
-                {/* Remove item */}
+                {/* Remove button */}
                 <button
                   type="button"
                   title="Remove from queue"
@@ -186,14 +188,16 @@ export default function BatchList({ items, activeId, onSelect, onRemove, onDownl
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    padding: '6px',
+                    padding: '8px',
                     cursor: 'pointer',
                     color: 'var(--grey)',
                     display: 'flex',
                     alignItems: 'center',
+                    minWidth: '32px',
+                    minHeight: '32px',
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
