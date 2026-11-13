@@ -190,14 +190,14 @@ export default function App() {
       <Navbar />
 
       {/* Hero Section */}
-      <section style={{ textAlign: 'center', padding: '1.5rem 0 2rem' }}>
+      <section style={{ textAlign: 'center', padding: '1rem 0 1.5rem' }}>
         <p
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
-            letterSpacing: '0.22em',
+            fontSize: '0.68rem',
+            letterSpacing: '0.18em',
             color: 'var(--grey)',
-            marginBottom: '1rem',
+            marginBottom: '0.75rem',
             textTransform: 'uppercase',
           }}
         >
@@ -208,12 +208,12 @@ export default function App() {
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
-            fontSize: 'clamp(2.5rem, 6.5vw, 5.5rem)',
+            fontSize: 'clamp(1.9rem, 7.5vw, 4.8rem)',
             lineHeight: 1.05,
             letterSpacing: '-0.04em',
             color: 'var(--black)',
             maxWidth: '920px',
-            margin: '0 auto 1.5rem',
+            margin: '0 auto 1rem',
           }}
         >
           Compress what matters.
@@ -222,11 +222,11 @@ export default function App() {
         <p
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
+            fontSize: 'clamp(0.78rem, 2.8vw, 0.95rem)',
             color: 'var(--grey)',
-            maxWidth: '580px',
-            margin: '0 auto 2.5rem',
-            lineHeight: 1.8,
+            maxWidth: '560px',
+            margin: '0 auto 1.5rem',
+            lineHeight: 1.7,
           }}
         >
           Shrink image sizes up to 85% with zero quality loss. 100% in-browser processing, private by design, and instant bulk ZIP exports.
